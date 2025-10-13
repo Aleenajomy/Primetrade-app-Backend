@@ -23,7 +23,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, fetchTasks]);
 
   const fetchTasks = async () => {
     try {
