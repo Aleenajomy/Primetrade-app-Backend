@@ -2,7 +2,7 @@ node_modules/
 .env
 *.db
 *.log
-build/
 dist/
 .DS_Store
 Thumbs.db
+README.md
