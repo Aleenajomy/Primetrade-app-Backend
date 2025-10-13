@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { FiSearch, FiX, FiPlus, FiFilter, FiEdit3, FiTrash2, FiUser, FiLogOut, FiCheckCircle, FiClock, FiAlertCircle } from 'react-icons/fi';
@@ -21,11 +21,7 @@ const Dashboard = () => {
 
   const API_URL = 'http://localhost:5000/api/v1';
 
-  useEffect(() => {
-    fetchTasks();
-  }, [searchTerm, statusFilter, fetchTasks]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
@@ -38,7 +34,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm, statusFilter]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
