@@ -377,7 +377,7 @@ app.put('/api/v1/tasks/:id', authenticateToken, [
  * @swagger
  * /api/v1/tasks/{id}:
  *   delete:
- *     summary: Delete a task (Admin only)
+ *     summary: Delete a task (User can delete own tasks, Admin can delete any)
  *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
@@ -387,10 +387,17 @@ app.put('/api/v1/tasks/:id', authenticateToken, [
  *     responses:
  *       200: { description: Task deleted }
  */
-app.delete('/api/v1/tasks/:id', authenticateToken, requireRole(['admin']), (req, res) => {
-  db.run('DELETE FROM tasks WHERE id = ?', [req.params.id], function(err) {
+app.delete('/api/v1/tasks/:id', authenticateToken, (req, res) => {
+  const query = req.user.role === 'admin' 
+    ? 'DELETE FROM tasks WHERE id = ?'
+    : 'DELETE FROM tasks WHERE id = ? AND user_id = ?';
+  const params = req.user.role === 'admin' 
+    ? [req.params.id]
+    : [req.params.id, req.user.id];
+
+  db.run(query, params, function(err) {
     if (err) return res.status(500).json({ error: 'Failed to delete task' });
-    if (this.changes === 0) return res.status(404).json({ error: 'Task not found' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Task not found or unauthorized' });
     res.json({ message: 'Task deleted successfully' });
   });
 });
@@ -456,7 +463,24 @@ app.get('/api/v1/admin/tasks', authenticateToken, requireRole(['admin']), (req, 
   });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`Health Check: http://localhost:${PORT}/health`);
 });
