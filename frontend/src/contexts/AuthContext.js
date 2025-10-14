@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = 'https://jsonplaceholder.typicode.com'; // Temporary mock API
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -41,10 +41,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    // Always succeed for demo
-    const mockUser = { id: 1, name: 'Demo User', email: email || 'demo@test.com', role: 'user' };
+    const mockUser = { id: 1, name: 'Demo User', email: email, role: 'user' };
     setUser(mockUser);
-    localStorage.setItem('token', 'demo-token');
     return { success: true };
   };
 
