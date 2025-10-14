@@ -314,58 +314,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* CRUD Operations Summary */}
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Task Operations (CRUD)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="flex items-center gap-3 p-3 bg-green-50 rounded border-l-4 border-green-500">
-                <FiPlus className="h-5 w-5 text-green-600" />
-                <div>
-                  <h3 className="font-medium text-green-800">CREATE</h3>
-                  <p className="text-sm text-green-600">{crudStats.create} tasks created</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded border-l-4 border-blue-500">
-                <FiSearch className="h-5 w-5 text-blue-600" />
-                <div>
-                  <h3 className="font-medium text-blue-800">READ</h3>
-                  <p className="text-sm text-blue-600">{crudStats.read} tasks viewing</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded border-l-4 border-yellow-500">
-                <FiEdit3 className="h-5 w-5 text-yellow-600" />
-                <div>
-                  <h3 className="font-medium text-yellow-800">UPDATE</h3>
-                  <p className="text-sm text-yellow-600">{crudStats.update} tasks updated</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-red-50 rounded border-l-4 border-red-500">
-                <FiTrash2 className="h-5 w-5 text-red-600" />
-                <div>
-                  <h3 className="font-medium text-red-800">DELETE</h3>
-                  <p className="text-sm text-red-600">{crudStats.delete} tasks deleted</p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* User Activities */}
-          {userActivities.length > 0 && (
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Recent Activities</h2>
-              <div className="space-y-3">
-                {userActivities.map((activity) => (
-                  <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                      <span className="text-gray-700 font-medium">{activity.action}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">{activity.time}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Task Display Area */}
           {tasks.length === 0 ? (
