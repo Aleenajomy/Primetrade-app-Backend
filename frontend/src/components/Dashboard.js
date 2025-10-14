@@ -359,7 +359,7 @@ const Dashboard = () => {
                       <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
                       <span className="text-gray-700 font-medium">{activity.action}</span>
                     </div>
-                    <span className="text-xs text-gray-500">{new Date(activity.time).toLocaleString()}</span>
+                    <span className="text-xs text-gray-500">{activity.time}</span>
                   </div>
                 ))}
               </div>
