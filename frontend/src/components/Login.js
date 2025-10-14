@@ -19,16 +19,12 @@ const Login = () => {
     setError('');
     setLoading(true);
 
-    try {
-      const result = await login(formData.email, formData.password);
-      
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.error);
-      }
-    } catch (error) {
-      setError('Network error. Please check if the backend server is running.');
+    const result = await login(formData.email, formData.password);
+    
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.error);
     }
     
     setLoading(false);
