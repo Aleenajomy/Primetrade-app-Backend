@@ -51,7 +51,8 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: 'Email and password required' };
     }
     const role = email === 'admin@test.com' ? 'admin' : 'user';
-    const mockUser = { id: 1, name: role === 'admin' ? 'Admin User' : 'Demo User', email: email, role: role };
+    const name = email.split('@')[0];
+    const mockUser = { id: 1, name: name, email: email, role: role };
     setUser(mockUser);
     return { success: true };
   };
