@@ -13,7 +13,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const API_URL = 'https://jsonplaceholder.typicode.com'; // Temporary mock API
 
@@ -92,6 +92,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    setUser,
     login,
     register,
     logout,
