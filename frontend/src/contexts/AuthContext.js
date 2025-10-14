@@ -41,14 +41,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    // Mock login for demo
-    if (email === 'admin@primetrade.ai' && password === 'admin123') {
-      const mockUser = { id: 1, name: 'Admin', email: 'admin@primetrade.ai', role: 'admin' };
+    // Mock login - accepts any email/password
+    if (email && password) {
+      const mockUser = { id: 1, name: 'User', email: email, role: 'user' };
       setUser(mockUser);
       localStorage.setItem('token', 'mock-token');
       return { success: true };
     }
-    return { success: false, error: 'Invalid credentials' };
+    return { success: false, error: 'Enter email and password' };
   };
 
   const register = async (name, email, password) => {
