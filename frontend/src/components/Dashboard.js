@@ -43,7 +43,8 @@ const Dashboard = () => {
       if (activity.action.includes('Updated')) stats.update++;
       if (activity.action.includes('Deleted')) stats.delete++;
     });
-    stats.read = tasks.length; // Current number of tasks viewed
+    const allTasks = JSON.parse(localStorage.getItem(`demoTasks_${user.email}`) || '[]');
+    stats.read = allTasks.length; // Total tasks available
     setCrudStats(stats);
   };
 
