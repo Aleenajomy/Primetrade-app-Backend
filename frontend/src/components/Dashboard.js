@@ -18,13 +18,32 @@ const Dashboard = () => {
     description: '',
     status: 'pending'
   });
+  const [userActivities, setUserActivities] = useState([]);
 
   const API_URL = 'http://localhost:5000/api';
   const isDemoMode = window.location.hostname.includes('github.io');
 
   useEffect(() => {
     fetchTasks();
+    loadUserActivities();
   }, [searchTerm, statusFilter]);
+
+  const loadUserActivities = () => {
+    const activities = JSON.parse(localStorage.getItem(`activities_${user?.email}`) || '[]');
+    setUserActivities(activities.slice(0, 5)); // Show last 5 activities
+  };
+
+  const addActivity = (action) => {
+    const activities = JSON.parse(localStorage.getItem(`activities_${user?.email}`) || '[]');
+    const newActivity = {
+      id: Date.now(),
+      action: action,
+      time: new Date().toLocaleString()
+    };
+    activities.unshift(newActivity);
+    localStorage.setItem(`activities_${user?.email}`, JSON.stringify(activities.slice(0, 20))); // Keep last 20
+    loadUserActivities();
+  };
 
   const fetchTasks = async () => {
     try {
@@ -72,6 +91,7 @@ const Dashboard = () => {
             task.id === editingTask.id ? { ...task, ...taskForm } : task
           );
           localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+          addActivity(`Updated task: ${taskForm.title}`);
         } else {
           const newTask = {
             id: Date.now(),
@@ -80,6 +100,7 @@ const Dashboard = () => {
           };
           demoTasks.push(newTask);
           localStorage.setItem('demoTasks', JSON.stringify(demoTasks));
+          addActivity(`Created task: ${taskForm.title}`);
         }
       } else {
         const config = { headers: { 'X-Requested-With': 'XMLHttpRequest' } };
@@ -105,8 +126,10 @@ const Dashboard = () => {
       try {
         if (isDemoMode) {
           const demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+          const taskToDelete = demoTasks.find(task => task.id === id);
           const updatedTasks = demoTasks.filter(task => task.id !== id);
           localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+          addActivity(`Deleted task: ${taskToDelete?.title}`);
         } else {
           await axios.delete(`${API_URL}/tasks/${id}`, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -279,6 +302,21 @@ const Dashboard = () => {
               </div>
             )}
           </div>
+
+          {/* User Activities */}
+          {userActivities.length > 0 && (
+            <div className="bg-white rounded-lg shadow p-6 mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Recent Activities</h2>
+              <div className="space-y-3">
+                {userActivities.map((activity) => (
+                  <div key={activity.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                    <span className="text-gray-700">{activity.action}</span>
+                    <span className="text-sm text-gray-500">{activity.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Enhanced Tasks Grid */}
           <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
