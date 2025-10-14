@@ -41,7 +41,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const mockUser = { id: 1, name: 'Demo User', email: email, role: 'user' };
+    const role = email === 'admin@test.com' ? 'admin' : 'user';
+    const mockUser = { id: 1, name: role === 'admin' ? 'Admin User' : 'Demo User', email: email, role: role };
     setUser(mockUser);
     return { success: true };
   };
