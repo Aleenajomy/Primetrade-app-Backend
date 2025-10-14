@@ -85,45 +85,35 @@ const Dashboard = () => {
     }
   };
 
-  const handleTaskSubmit = async (e) => {
+  const handleTaskSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (isDemoMode) {
-        const demoTasks = JSON.parse(localStorage.getItem(`demoTasks_${user?.email}`) || '[]');
-        
-        if (editingTask) {
-          const updatedTasks = demoTasks.map(task => 
-            task.id === editingTask.id ? { ...task, ...taskForm } : task
-          );
-          localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(updatedTasks));
-          addActivity(`Updated task: ${taskForm.title}`);
-        } else {
-          const newTask = {
-            id: Date.now(),
-            ...taskForm,
-            created_at: new Date().toISOString()
-          };
-          demoTasks.push(newTask);
-          localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(demoTasks));
-          addActivity(`Created task: ${taskForm.title}`);
-        }
-      } else {
-        const config = { headers: { 'X-Requested-With': 'XMLHttpRequest' } };
-        
-        if (editingTask) {
-          await axios.put(`${API_URL}/tasks/${editingTask.id}`, taskForm, config);
-        } else {
-          await axios.post(`${API_URL}/tasks`, taskForm, config);
-        }
-      }
-      
-      setTaskForm({ title: '', description: '', status: 'pending' });
-      setShowTaskForm(false);
-      setEditingTask(null);
-      fetchTasks();
-    } catch (error) {
-      console.error('Error saving task:', error);
+    console.log('Creating task:', taskForm);
+    
+    const demoTasks = JSON.parse(localStorage.getItem(`demoTasks_${user?.email}`) || '[]');
+    
+    if (editingTask) {
+      const updatedTasks = demoTasks.map(task => 
+        task.id === editingTask.id ? { ...task, ...taskForm } : task
+      );
+      localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(updatedTasks));
+      addActivity(`Updated task: ${taskForm.title}`);
+    } else {
+      const newTask = {
+        id: Date.now(),
+        title: taskForm.title,
+        description: taskForm.description,
+        status: taskForm.status,
+        created_at: new Date().toISOString()
+      };
+      demoTasks.push(newTask);
+      localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(demoTasks));
+      addActivity(`Created task: ${taskForm.title}`);
     }
+    
+    setTaskForm({ title: '', description: '', status: 'pending' });
+    setShowTaskForm(false);
+    setEditingTask(null);
+    fetchTasks();
   };
 
   const handleDeleteTask = async (id) => {
