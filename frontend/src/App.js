@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import AdminDashboard from './components/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function AppRoutes() {
@@ -27,7 +28,7 @@ function AppRoutes() {
         path="/dashboard" 
         element={
           <ProtectedRoute>
-            <Dashboard />
+            {user?.role === 'admin' ? <AdminDashboard /> : <Dashboard />}
           </ProtectedRoute>
         } 
       />
