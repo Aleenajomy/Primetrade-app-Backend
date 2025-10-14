@@ -41,24 +41,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    try {
-      const response = await axios.post(`${API_URL}/login`, 
-        { email, password }
-      );
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
-      
+    // Mock login for demo
+    if (email === 'admin@primetrade.ai' && password === 'admin123') {
+      const mockUser = { id: 1, name: 'Admin', email: 'admin@primetrade.ai', role: 'admin' };
+      setUser(mockUser);
+      localStorage.setItem('token', 'mock-token');
       return { success: true };
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || error.response?.data?.errors?.[0]?.msg || 'Login failed' 
-      };
     }
+    return { success: false, error: 'Invalid credentials' };
   };
 
   const register = async (name, email, password) => {

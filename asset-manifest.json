@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/Primetrade-app-Backend/static/js/main.1349b985.js",
+    "main.js": "/Primetrade-app-Backend/static/js/main.fc1bd042.js",
     "index.html": "/Primetrade-app-Backend/index.html",
-    "main.1349b985.js.map": "/Primetrade-app-Backend/static/js/main.1349b985.js.map"
+    "main.fc1bd042.js.map": "/Primetrade-app-Backend/static/js/main.fc1bd042.js.map"
   },
   "entrypoints": [
-    "static/js/main.1349b985.js"
+    "static/js/main.fc1bd042.js"
   ]
 }
