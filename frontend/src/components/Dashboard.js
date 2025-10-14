@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 import { FiSearch, FiX, FiPlus, FiFilter, FiEdit3, FiTrash2, FiUser, FiLogOut, FiCheckCircle, FiClock, FiAlertCircle } from 'react-icons/fi';
@@ -19,36 +19,76 @@ const Dashboard = () => {
     status: 'pending'
   });
 
-  const API_URL = 'http://localhost:5000/api/v1';
+  const API_URL = 'http://localhost:5000/api';
+  const isDemoMode = window.location.hostname.includes('github.io');
 
-  const fetchTasks = useCallback(async () => {
+  useEffect(() => {
+    fetchTasks();
+  }, [searchTerm, statusFilter]);
+
+  const fetchTasks = async () => {
     try {
+      if (isDemoMode) {
+        let demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+        
+        // Filter demo tasks
+        if (searchTerm) {
+          demoTasks = demoTasks.filter(task => 
+            task.title.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+        if (statusFilter) {
+          demoTasks = demoTasks.filter(task => task.status === statusFilter);
+        }
+        
+        setTasks(demoTasks);
+        setLoading(false);
+        return;
+      }
+
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (statusFilter) params.append('status', statusFilter);
       
-      const response = await axios.get(`${API_URL}/tasks?${params}`);
+      const response = await axios.get(`${API_URL}/tasks?${params}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     } finally {
       setLoading(false);
     }
-  }, [searchTerm, statusFilter]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  };
 
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
     try {
-      const config = {};
-      
-      if (editingTask) {
-        await axios.put(`${API_URL}/tasks/${editingTask.id}`, taskForm, config);
+      if (isDemoMode) {
+        const demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+        
+        if (editingTask) {
+          const updatedTasks = demoTasks.map(task => 
+            task.id === editingTask.id ? { ...task, ...taskForm } : task
+          );
+          localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+        } else {
+          const newTask = {
+            id: Date.now(),
+            ...taskForm,
+            created_at: new Date().toISOString()
+          };
+          demoTasks.push(newTask);
+          localStorage.setItem('demoTasks', JSON.stringify(demoTasks));
+        }
       } else {
-        await axios.post(`${API_URL}/tasks`, taskForm, config);
+        const config = { headers: { 'X-Requested-With': 'XMLHttpRequest' } };
+        
+        if (editingTask) {
+          await axios.put(`${API_URL}/tasks/${editingTask.id}`, taskForm, config);
+        } else {
+          await axios.post(`${API_URL}/tasks`, taskForm, config);
+        }
       }
       
       setTaskForm({ title: '', description: '', status: 'pending' });
@@ -63,7 +103,15 @@ const Dashboard = () => {
   const handleDeleteTask = async (id) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       try {
-        await axios.delete(`${API_URL}/tasks/${id}`);
+        if (isDemoMode) {
+          const demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+          const updatedTasks = demoTasks.filter(task => task.id !== id);
+          localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+        } else {
+          await axios.delete(`${API_URL}/tasks/${id}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+        }
         fetchTasks();
       } catch (error) {
         console.error('Error deleting task:', error);

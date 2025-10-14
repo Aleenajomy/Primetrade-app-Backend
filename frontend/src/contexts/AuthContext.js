@@ -13,19 +13,25 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
+  const API_URL = 'http://localhost:5000/api';
+  const isDemoMode = window.location.hostname.includes('github.io');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchProfile();
+      if (isDemoMode) {
+        const demoUser = JSON.parse(localStorage.getItem('demoUser') || '{}');
+        setUser(demoUser);
+        setLoading(false);
+      } else {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        fetchProfile();
+      }
     } else {
       setLoading(false);
     }
-    
   }, []);
 
   const fetchProfile = async () => {
@@ -41,13 +47,36 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const role = email === 'admin@test.com' ? 'admin' : 'user';
-    const mockUser = { id: 1, name: role === 'admin' ? 'Admin User' : 'Demo User', email: email, role: role };
-    setUser(mockUser);
-    return { success: true };
+    try {
+      const response = await axios.post(`${API_URL}/login`, 
+        { email, password }
+      );
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setUser(user);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Login error:', error.response?.data || error.message);
+      return { 
+        success: false, 
+        error: error.response?.data?.error || error.response?.data?.errors?.[0]?.msg || 'Login failed' 
+      };
+    }
   };
 
   const register = async (name, email, password) => {
+    if (isDemoMode) {
+      const demoUser = { id: 1, name, email };
+      const demoToken = 'demo-jwt-token-' + Date.now();
+      localStorage.setItem('token', demoToken);
+      localStorage.setItem('demoUser', JSON.stringify(demoUser));
+      setUser(demoUser);
+      return { success: true };
+    }
+
     try {
       const response = await axios.post(`${API_URL}/register`, 
         { name, email, password }
@@ -77,7 +106,8 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (name) => {
     try {
       await axios.put(`${API_URL}/profile`, 
-        { name }
+        { name },
+        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
       );
       setUser(prev => ({ ...prev, name }));
       return { success: true };
@@ -91,7 +121,6 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
-    setUser,
     login,
     register,
     logout,
