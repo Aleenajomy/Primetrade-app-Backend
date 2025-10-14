@@ -4,14 +4,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiAlertCircle } from 'react-icons/fi';
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ 
+    email: localStorage.getItem('loginEmail') || '', 
+    password: localStorage.getItem('loginPassword') || '' 
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    localStorage.setItem(`login${name.charAt(0).toUpperCase() + name.slice(1)}`, value);
   };
 
   const handleSubmit = async (e) => {
@@ -22,6 +27,8 @@ const Login = () => {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
+      localStorage.removeItem('loginEmail');
+      localStorage.removeItem('loginPassword');
       navigate('/dashboard');
     } else {
       setError(result.error);
