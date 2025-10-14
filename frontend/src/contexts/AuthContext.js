@@ -52,7 +52,24 @@ export const AuthProvider = ({ children }) => {
     }
     const role = email === 'admin@test.com' ? 'admin' : 'user';
     const name = email.split('@')[0];
-    const mockUser = { id: 1, name: name, email: email, role: role };
+    const mockUser = { id: Date.now(), name: name, email: email, role: role };
+    
+    // Track logged users
+    const loggedUsers = JSON.parse(localStorage.getItem('loggedUsers') || '[]');
+    const existingUser = loggedUsers.find(u => u.email === email);
+    
+    if (!existingUser) {
+      loggedUsers.push({
+        id: Date.now(),
+        name: name,
+        email: email,
+        role: role,
+        status: 'active',
+        loginTime: new Date().toLocaleString()
+      });
+      localStorage.setItem('loggedUsers', JSON.stringify(loggedUsers));
+    }
+    
     setUser(mockUser);
     return { success: true };
   };
