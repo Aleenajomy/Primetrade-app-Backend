@@ -41,14 +41,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    // Mock login - accepts any email/password
-    if (email && password) {
-      const mockUser = { id: 1, name: 'User', email: email, role: 'user' };
-      setUser(mockUser);
-      localStorage.setItem('token', 'mock-token');
-      return { success: true };
-    }
-    return { success: false, error: 'Enter email and password' };
+    // Always succeed for demo
+    const mockUser = { id: 1, name: 'Demo User', email: email || 'demo@test.com', role: 'user' };
+    setUser(mockUser);
+    localStorage.setItem('token', 'demo-token');
+    return { success: true };
   };
 
   const register = async (name, email, password) => {
