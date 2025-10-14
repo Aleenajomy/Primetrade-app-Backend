@@ -53,7 +53,7 @@ const Dashboard = () => {
   const fetchTasks = async () => {
     try {
       if (isDemoMode) {
-        let demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+        let demoTasks = JSON.parse(localStorage.getItem(`demoTasks_${user?.email}`) || '[]');
         
         // Filter demo tasks
         if (searchTerm) {
@@ -89,13 +89,13 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       if (isDemoMode) {
-        const demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+        const demoTasks = JSON.parse(localStorage.getItem(`demoTasks_${user?.email}`) || '[]');
         
         if (editingTask) {
           const updatedTasks = demoTasks.map(task => 
             task.id === editingTask.id ? { ...task, ...taskForm } : task
           );
-          localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+          localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(updatedTasks));
           addActivity(`Updated task: ${taskForm.title}`);
         } else {
           const newTask = {
@@ -104,7 +104,7 @@ const Dashboard = () => {
             created_at: new Date().toISOString()
           };
           demoTasks.push(newTask);
-          localStorage.setItem('demoTasks', JSON.stringify(demoTasks));
+          localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(demoTasks));
           addActivity(`Created task: ${taskForm.title}`);
         }
       } else {
@@ -130,10 +130,10 @@ const Dashboard = () => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       try {
         if (isDemoMode) {
-          const demoTasks = JSON.parse(localStorage.getItem('demoTasks') || '[]');
+          const demoTasks = JSON.parse(localStorage.getItem(`demoTasks_${user?.email}`) || '[]');
           const taskToDelete = demoTasks.find(task => task.id === id);
           const updatedTasks = demoTasks.filter(task => task.id !== id);
-          localStorage.setItem('demoTasks', JSON.stringify(updatedTasks));
+          localStorage.setItem(`demoTasks_${user?.email}`, JSON.stringify(updatedTasks));
           addActivity(`Deleted task: ${taskToDelete?.title}`);
         } else {
           await axios.delete(`${API_URL}/tasks/${id}`, {
