@@ -22,6 +22,7 @@ const Login = () => {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
+      setFormData({ email: '', password: '' });
       navigate('/dashboard');
     } else {
       setError(result.error);
