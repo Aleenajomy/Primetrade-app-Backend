@@ -308,9 +308,12 @@ const Dashboard = () => {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Recent Activities</h2>
               <div className="space-y-3">
                 {userActivities.map((activity) => (
-                  <div key={activity.id} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                    <span className="text-gray-700">{activity.action}</span>
-                    <span className="text-sm text-gray-500">{activity.time}</span>
+                  <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                      <span className="text-gray-700 font-medium">{activity.action}</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{new Date(activity.time).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
