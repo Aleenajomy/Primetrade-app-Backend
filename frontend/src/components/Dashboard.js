@@ -270,7 +270,11 @@ const Dashboard = () => {
 
               {/* Add Task Button */}
               <button
-                onClick={() => setShowTaskForm(true)}
+                type="button"
+                onClick={() => {
+                  console.log('Add Task clicked');
+                  setShowTaskForm(true);
+                }}
                 className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 font-medium"
               >
                 <FiPlus className="h-5 w-5" />
@@ -401,7 +405,7 @@ const Dashboard = () => {
 
       {/* Task Form Modal */}
       {showTaskForm && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">
               {editingTask ? 'Edit Task' : 'Add New Task'}
