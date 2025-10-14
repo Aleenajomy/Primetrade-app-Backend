@@ -11,14 +11,22 @@ const AdminDashboard = () => {
     const loggedUsers = JSON.parse(localStorage.getItem('loggedUsers') || '[]');
     setUsers(loggedUsers);
     
-    // Get activities for logged users
-    const userActivities = loggedUsers.map((user, index) => ({
-      id: index + 1,
-      user: user.email,
-      action: 'Login',
-      time: 'Recently'
-    }));
-    setActivities(userActivities);
+    // Get activities for logged users only
+    const allActivities = [];
+    loggedUsers.forEach(user => {
+      const userActivities = JSON.parse(localStorage.getItem(`activities_${user.email}`) || '[]');
+      userActivities.forEach(activity => {
+        if (activity.userEmail === user.email) {
+          allActivities.push({
+            id: activity.id,
+            user: user.email,
+            action: activity.action,
+            time: activity.time
+          });
+        }
+      });
+    });
+    setActivities(allActivities.slice(0, 10));
   }, []);
 
   // Track logged user
