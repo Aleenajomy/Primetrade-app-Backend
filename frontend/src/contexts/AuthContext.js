@@ -47,24 +47,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    try {
-      const response = await axios.post(`${API_URL}/login`, 
-        { email, password }
-      );
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
-      
-      return { success: true };
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      return { 
-        success: false, 
-        error: error.response?.data?.error || error.response?.data?.errors?.[0]?.msg || 'Login failed' 
-      };
-    }
+    const role = email === 'admin@test.com' ? 'admin' : 'user';
+    const mockUser = { id: 1, name: role === 'admin' ? 'Admin User' : 'Demo User', email: email, role: role };
+    setUser(mockUser);
+    return { success: true };
   };
 
   const register = async (name, email, password) => {
