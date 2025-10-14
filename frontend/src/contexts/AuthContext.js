@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'http://localhost:5000/api';
+  const API_URL = 'https://your-render-url.onrender.com/api/v1';
   const isDemoMode = window.location.hostname.includes('github.io');
 
   useEffect(() => {

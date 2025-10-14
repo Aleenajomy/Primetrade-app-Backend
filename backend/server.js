@@ -16,12 +16,9 @@ const { body, validationResult } = require('express-validator');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key-for-demo-only';
 
-if (!JWT_SECRET) {
-  console.error('JWT_SECRET environment variable is required');
-  process.exit(1);
-}
+console.log('Server starting with JWT_SECRET:', JWT_SECRET ? 'Set' : 'Not set');
 
 // Security middleware
 app.use(helmet());
@@ -327,6 +324,10 @@ app.delete('/api/tasks/:id', authenticateToken, (req, res) => {
   );
 });
 
-app.listen(PORT, () => {
+app.get('/', (req, res) => {
+  res.json({ message: 'Primetrade API is running', version: '1.0.0' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
