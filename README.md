@@ -146,10 +146,20 @@ For detailed API documentation, see [API_Documentation.md](./docs/API_Documentat
 
 ## 🧪 Testing the API
 
+### Demo Credentials
+
+**Regular User:**
+- Email: `jack@gmail.com`
+- Password: `jack@123`
+
+**Admin User:**
+- Email: `admin@gmail.com`
+- Password: `123`
+
 ### Using Postman
 1. Import the collection: `docs/Primetrade_API.postman_collection.json`
 2. Set the `baseUrl` variable to `http://localhost:5000/api`
-3. Register a new user or login to get an auth token
+3. Use demo credentials above or register a new user
 4. The token will be automatically set for protected endpoints
 
 ### Using cURL
