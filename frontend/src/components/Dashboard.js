@@ -29,19 +29,24 @@ const Dashboard = () => {
   }, [searchTerm, statusFilter]);
 
   const loadUserActivities = () => {
-    const activities = JSON.parse(localStorage.getItem(`activities_${user?.email}`) || '[]');
-    setUserActivities(activities.slice(0, 5)); // Show last 5 activities
+    if (!user?.email) return;
+    const activities = JSON.parse(localStorage.getItem(`activities_${user.email}`) || '[]');
+    // Only show activities for the current logged-in user
+    const userSpecificActivities = activities.filter(activity => activity.userEmail === user.email);
+    setUserActivities(userSpecificActivities.slice(0, 5)); // Show last 5 activities
   };
 
   const addActivity = (action) => {
-    const activities = JSON.parse(localStorage.getItem(`activities_${user?.email}`) || '[]');
+    if (!user?.email) return;
+    const activities = JSON.parse(localStorage.getItem(`activities_${user.email}`) || '[]');
     const newActivity = {
       id: Date.now(),
       action: action,
-      time: new Date().toLocaleString()
+      time: new Date().toLocaleString(),
+      userEmail: user.email // Explicitly store user email
     };
     activities.unshift(newActivity);
-    localStorage.setItem(`activities_${user?.email}`, JSON.stringify(activities.slice(0, 20))); // Keep last 20
+    localStorage.setItem(`activities_${user.email}`, JSON.stringify(activities.slice(0, 20))); // Keep last 20
     loadUserActivities();
   };
 
