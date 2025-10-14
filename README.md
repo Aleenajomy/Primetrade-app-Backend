@@ -63,7 +63,7 @@ primetrade-app-Backend/
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Aleenajomy/Primetrade-app-Backend.git
 cd primetrade-app-Backend
 ```
 
