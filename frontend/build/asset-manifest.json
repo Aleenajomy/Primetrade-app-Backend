@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Primetrade-app-Backend/static/css/main.67f62024.css",
-    "main.js": "/Primetrade-app-Backend/static/js/main.2f5ff7df.js",
+    "main.js": "/Primetrade-app-Backend/static/js/main.c8614c71.js",
     "static/js/453.d7446e4a.chunk.js": "/Primetrade-app-Backend/static/js/453.d7446e4a.chunk.js",
     "index.html": "/Primetrade-app-Backend/index.html",
     "main.67f62024.css.map": "/Primetrade-app-Backend/static/css/main.67f62024.css.map",
-    "main.2f5ff7df.js.map": "/Primetrade-app-Backend/static/js/main.2f5ff7df.js.map",
+    "main.c8614c71.js.map": "/Primetrade-app-Backend/static/js/main.c8614c71.js.map",
     "453.d7446e4a.chunk.js.map": "/Primetrade-app-Backend/static/js/453.d7446e4a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.67f62024.css",
-    "static/js/main.2f5ff7df.js"
+    "static/js/main.c8614c71.js"
   ]
 }

@@ -7,21 +7,40 @@ const AdminDashboard = () => {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-    // Mock user data
-    setUsers([
-      { id: 1, name: 'admin', email: 'admin@test.com', role: 'admin', status: 'active' },
-      { id: 2, name: 'john', email: 'john@test.com', role: 'user', status: 'active' },
-      { id: 3, name: 'sarah', email: 'sarah@test.com', role: 'user', status: 'inactive' }
-    ]);
+    // Get logged users from localStorage
+    const loggedUsers = JSON.parse(localStorage.getItem('loggedUsers') || '[]');
+    setUsers(loggedUsers);
     
-    // Mock activity data
-    setActivities([
-      { id: 1, user: 'john@test.com', action: 'Login', time: '2 mins ago' },
-      { id: 2, user: 'sarah@test.com', action: 'Created task', time: '5 mins ago' },
-      { id: 3, user: 'admin@test.com', action: 'Accessed admin panel', time: '10 mins ago' },
-      { id: 4, user: 'john@test.com', action: 'Updated profile', time: '15 mins ago' }
-    ]);
+    // Get activities for logged users
+    const userActivities = loggedUsers.map((user, index) => ({
+      id: index + 1,
+      user: user.email,
+      action: 'Login',
+      time: 'Recently'
+    }));
+    setActivities(userActivities);
   }, []);
+
+  // Track logged user
+  useEffect(() => {
+    if (user) {
+      const loggedUsers = JSON.parse(localStorage.getItem('loggedUsers') || '[]');
+      const existingUser = loggedUsers.find(u => u.email === user.email);
+      
+      if (!existingUser) {
+        const newUser = {
+          id: Date.now(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          status: 'active'
+        };
+        loggedUsers.push(newUser);
+        localStorage.setItem('loggedUsers', JSON.stringify(loggedUsers));
+        setUsers(loggedUsers);
+      }
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-50">
