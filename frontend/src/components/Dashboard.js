@@ -366,8 +366,37 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Enhanced Tasks Grid */}
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          {/* Task Display Area */}
+          {tasks.length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-xl shadow-sm">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FiSearch className="h-8 w-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {searchTerm || statusFilter ? 'No tasks found' : 'No tasks yet'}
+              </h3>
+              <p className="text-gray-500 mb-4">
+                {searchTerm || statusFilter 
+                  ? 'No tasks match your current filters. Try adjusting your search or filters.'
+                  : 'Create your first task to get started!'}
+              </p>
+              <button
+                onClick={() => {
+                  if (searchTerm || statusFilter) {
+                    setSearchTerm('');
+                    setStatusFilter('');
+                  } else {
+                    setShowTaskForm(true);
+                  }
+                }}
+                className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                <FiPlus className="h-4 w-4" />
+                {searchTerm || statusFilter ? 'Clear Filters' : 'Create your first task'}
+              </button>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {tasks.map((task) => (
               <div key={task.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-indigo-200">
                 <div className="flex justify-between items-start mb-3">
@@ -405,9 +434,11 @@ const Dashboard = () => {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          )}
 
-          {tasks.length === 0 && (
+          {/* Remove duplicate empty state since it's now handled above */}
+          {false && (
             <div className="text-center py-16 bg-white rounded-xl shadow-sm">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiSearch className="h-8 w-8 text-gray-400" />
