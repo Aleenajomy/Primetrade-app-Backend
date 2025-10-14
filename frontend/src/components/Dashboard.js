@@ -19,6 +19,7 @@ const Dashboard = () => {
     status: 'pending'
   });
   const [userActivities, setUserActivities] = useState([]);
+  const [crudStats, setCrudStats] = useState({ create: 0, read: 0, update: 0, delete: 0 });
 
   const API_URL = 'http://localhost:5000/api';
   const isDemoMode = window.location.hostname.includes('github.io');
@@ -34,6 +35,16 @@ const Dashboard = () => {
     // Only show activities for the current logged-in user
     const userSpecificActivities = activities.filter(activity => activity.userEmail === user.email);
     setUserActivities(userSpecificActivities.slice(0, 5)); // Show last 5 activities
+    
+    // Calculate CRUD stats
+    const stats = { create: 0, read: 0, update: 0, delete: 0 };
+    userSpecificActivities.forEach(activity => {
+      if (activity.action.includes('Created')) stats.create++;
+      if (activity.action.includes('Updated')) stats.update++;
+      if (activity.action.includes('Deleted')) stats.delete++;
+    });
+    stats.read = tasks.length; // Current number of tasks viewed
+    setCrudStats(stats);
   };
 
   const addActivity = (action) => {
@@ -310,28 +321,28 @@ const Dashboard = () => {
                 <FiPlus className="h-5 w-5 text-green-600" />
                 <div>
                   <h3 className="font-medium text-green-800">CREATE</h3>
-                  <p className="text-sm text-green-600">Add new tasks</p>
+                  <p className="text-sm text-green-600">{crudStats.create} tasks created</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-blue-50 rounded border-l-4 border-blue-500">
                 <FiSearch className="h-5 w-5 text-blue-600" />
                 <div>
                   <h3 className="font-medium text-blue-800">READ</h3>
-                  <p className="text-sm text-blue-600">View & search tasks</p>
+                  <p className="text-sm text-blue-600">{crudStats.read} tasks viewing</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded border-l-4 border-yellow-500">
                 <FiEdit3 className="h-5 w-5 text-yellow-600" />
                 <div>
                   <h3 className="font-medium text-yellow-800">UPDATE</h3>
-                  <p className="text-sm text-yellow-600">Edit existing tasks</p>
+                  <p className="text-sm text-yellow-600">{crudStats.update} tasks updated</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-red-50 rounded border-l-4 border-red-500">
                 <FiTrash2 className="h-5 w-5 text-red-600" />
                 <div>
                   <h3 className="font-medium text-red-800">DELETE</h3>
-                  <p className="text-sm text-red-600">Remove tasks</p>
+                  <p className="text-sm text-red-600">{crudStats.delete} tasks deleted</p>
                 </div>
               </div>
             </div>
